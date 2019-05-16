@@ -1,6 +1,6 @@
 {
   "name": "tornis",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tornis helps you watch and respond to changes in your browser's viewport",
   "scripts": {
     "build": "node rollup.js"
