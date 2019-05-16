@@ -1,4 +1,8 @@
 # Tornis - watch and respond
+[![npm version](https://badge.fury.io/js/tornis.svg)](https://badge.fury.io/js/tornis)
+![the gzip size of Tornis](https://img.badgesize.io/robb0wen/tornis/master/dist/tornis.js.svg?compression=gzip)
+![the Brotli size of Tornis](https://img.badgesize.io/robb0wen/tornis/master/dist/tornis.js.svg?compression=brotli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ![Watch and respond](https://tornis.robbowen.digital/icon.png)
 
