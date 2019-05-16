@@ -28,7 +28,7 @@ Whilst it is entirely possible to manually track everything in Tornis's store us
 Tornis takes a deferred approach. Rather than bind directly to native events, Tornis throttles them and captures only the bare minimum - the updated values. An optimised render loop with the requestAnimationFrame api updates the store and provides the new state to any subscribed functions. This means that your code only runs when the store has changed, and when the browser is ready to render.
 
 ## Installation
-Tornis can be installed from source on GitHub, or from npm. Npm is the preferred method. Open your project directory in your command line or terminal, then run:
+Tornis can be installed from source and included as a script tag, or from npm. Npm is the preferred method. Open your project directory in your command line or terminal, then run:
 
 ```
 npm install tornis --save
