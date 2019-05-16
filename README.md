@@ -19,7 +19,7 @@ Coming soon:
 
 You can subscribe to store updates and combine these values to create all sorts of effects.
 
-## When to use Tornis.
+## When to use Tornis
 
 First and foremost, __Tornis is not a parallax library__. It can of course be used to create parallax effects, but the library itself is concerned only with __tracking the state of your viewport__.
 
@@ -27,14 +27,14 @@ Whilst it is entirely possible to manually track everything in Tornis's store us
 
 Tornis takes a deferred approach. Rather than bind directly to native events, Tornis throttles them and captures only the bare minimum - the updated values. An optimised render loop with the requestAnimationFrame api updates the store and provides the new state to any subscribed functions. This means that your code only runs when the store has changed, and when the browser is ready to render.
 
-Installation.
+## Installation
 Tornis can be installed from source on GitHub, or from npm. Npm is the preferred method. Open your project directory in your command line or terminal, then run:
 
 ```
 npm install tornis --save
 ```
 
-## The state object.
+## The state object
 The viewport state can be accessed at any time using the `getViewportState()` function. But the main focus is on watched functions.
 
 You can subscribe a function to the Tornis store by passing it to the `watchViewport()` function. Tornis automatically runs this function whenever the viewport state changes. When it does, the updated viewport state object (seen below) is passed to the watched function as its first parameter.
