@@ -1,6 +1,6 @@
 # Tornis - watch and respond
 
-![Watch and respond](./icon.png)
+![Watch and respond](https://tornis.robbowen.digital/icon.png)
 
 Taking its name from the forest watchtowers of Latvia, Tornis is a minimal JavaScript library that watches the state of your browser's viewport, allowing you to respond whenever something changes. 
 
