@@ -1,0 +1,29 @@
+{
+  "name": "tornis",
+  "version": "0.1.0",
+  "description": "Tornis helps you watch and respond to changes in your browser's viewport",
+  "scripts": {
+    "build": "node rollup.js"
+  },
+  "icon": "icon.png",
+  "keywords": [
+    "viewport",
+    "mouse",
+    "scrolling",
+    "state",
+    "management"
+  ],
+  "author": {
+    "name": "Robb Owen",
+    "email": "hello@robbowen.digital",
+    "url": "https://robbowen.digital"
+  },
+  "homepage": "https://github.com/robb0wen/tornis#readme",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "rollup": "^1.12.1",
+    "rollup-plugin-uglify-es": "0.0.1"
+  }
+}
