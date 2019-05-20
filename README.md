@@ -121,7 +121,7 @@ Any watched function will be automatically run whenever any of the associated pr
 To see a further example of usage, view the demo site at https://tornis.robbowen.digital
 
 ## Legacy script usage
-Copy the file `/dist/tornis.js` to your project and include it with a script tag
+Copy the file `/dist/tornis.js` to your project and include it with a script tag. If you are supporting legacy browsers, you can use the transpiled ES5 version, `/dist/tornis.es5.js`.
 
 ``` html
 <script src="path/to/tornis.js"></script>
