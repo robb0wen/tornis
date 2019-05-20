@@ -4,7 +4,8 @@
   "description": "Tornis helps you watch and respond to changes in your browser's viewport",
   "main": "dist/tornis.js",
   "scripts": {
-    "build": "node rollup.js"
+    "build": "node rollup.js",
+    "build:es5": "node rollup.js --es5"
   },
   "icon": "icon.png",
   "keywords": [
@@ -22,9 +23,10 @@
   "homepage": "https://github.com/robb0wen/tornis#readme",
   "license": "MIT",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
     "rollup": "^1.12.1",
+    "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-uglify-es": "0.0.1"
   }
 }
