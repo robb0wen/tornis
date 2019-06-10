@@ -1,3 +1,6 @@
+// Check if the module is initialised during server-side rendering
+const isSSR = typeof window === 'undefined';
+
 /**
  * Simple throttling helper that limits a 
  * function to only run once every {delay}ms
@@ -32,6 +35,10 @@ function getMean(arr) {
 class Tornis {
   // set a whole load of initial values
   constructor() {
+
+    // Exit out if this is running server-side
+    if (isSSR) return;
+
     this.lastX = 0;
     this.lastY = 0;
     this.lastWidth = window.innerWidth;
@@ -132,10 +139,6 @@ class Tornis {
         }
       }
     };
-  }
-
-  updateSize() {
-    
   }
 
   /**
@@ -251,6 +254,9 @@ class Tornis {
       throw new Error('Value passed to Watch is not a function');
     }
 
+    // Exit out if this is running server-side
+    if (isSSR) return;
+
     if (callOnWatch) {
       // get a copy of the store
       const firstRunData = this.formatData();
@@ -278,21 +284,27 @@ class Tornis {
       throw new Error('The value passed to unwatch is not a function');
     }
 
+    // Exit out if this is running server-side
+    if (isSSR) return;
+
     // remove the callback from the list
     this.callbacks = this.callbacks.filter(cb => cb !== callback);
   }
 
 }
 
+
 // Create a singleton instance of Tornis
 const TORNIS = new Tornis();
 
-// Expose a limited set of functions to a global, in order to allow access for basic script usage with <script>
-window.__TORNIS = {
-  watchViewport: TORNIS.watch,
-  unwatchViewport: TORNIS.unwatch,
-  getViewportState: TORNIS.formatData
-};
+if (!isSSR) {
+  // Expose a limited set of functions to a global, in order to allow access for basic script usage with <script>
+  window.__TORNIS = {
+    watchViewport: TORNIS.watch,
+    unwatchViewport: TORNIS.unwatch,
+    getViewportState: TORNIS.formatData
+  };
+}
 
 // Export the Tornis API functions for ES6
 export const watchViewport = TORNIS.watch;
