@@ -35,7 +35,7 @@ Tornis takes a deferred approach. Rather than bind directly to native events, To
 Tornis can be installed from source and included as a script tag, or from npm. Npm is the preferred method. Open your project directory in your command line or terminal, then run:
 
 ```
-npm install tornis --save
+npm install tornis
 ```
 
 ## The state object
