@@ -48,12 +48,21 @@ class Tornis {
     this.lastWindowX = window.screenX;
     this.lastWindowY = window.screenY;
 
+    // device orientation
+    this.lastAlpha = 0;
+    this.lastBeta = 0;
+    this.lastGamma = 0;
+    this.currAlpha = 0;
+    this.currBeta = 0;
+    this.currGamma = 0;
+
     this.scrollHeight = document.body.scrollHeight;
 
     this.scrollChange = false;
     this.sizeChange = false;
     this.mouseChange = false;
     this.positionChange = false;
+    this.orientationChange = false;
 
     this.currX = 0;
     this.currY = 0;
@@ -75,6 +84,7 @@ class Tornis {
     this.lastWindowXVelocity = 0;
     this.lastWindowYVelocity = 0;
 
+
     // flag to limit rAF renders
     this.updating = false;
 
@@ -85,6 +95,8 @@ class Tornis {
     this.update = this.update.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleMouse = this.handleMouse.bind(this);
+    this.handleOrientation = this.handleOrientation.bind(this);
+    this.recalibrateOrientation = this.recalibrateOrientation.bind(this);
     this.formatData = this.formatData.bind(this);
     this.watch = this.watch.bind(this);
     this.unwatch = this.unwatch.bind(this);
@@ -96,6 +108,7 @@ class Tornis {
     // bind event handlers to the window
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('mousemove', this.handleMouse);
+    window.addEventListener('deviceorientation', this.handleOrientation);
 
     // begin the update loop
     requestAnimationFrame(this.update);
@@ -115,6 +128,48 @@ class Tornis {
   handleMouse(e) {
     this.currMouseX = e.clientX;
     this.currMouseY = e.clientY;
+  }
+
+  /**
+   * Event handler to capture device orientation
+   */
+  handleOrientation(e) {
+    // cache initial position for calibration
+    if (!this.initialAlpha) { this.initialAlpha = e.alpha; }
+    if (!this.initialBeta) { this.initialBeta = e.beta; }
+    if (!this.initialGamma) { this.initialGamma = e.gamma; }
+    
+    this.currAlpha = e.alpha;
+    this.currBeta = e.beta;
+    this.currGamma = e.gamma;
+  }
+
+  /** 
+   * Allow initial orientation to be reset to the last recorded values
+  */
+  recalibrateOrientation() {
+    // cache the old values
+    const calibration = {
+      prev: {
+        alpha: this.initialAlpha,
+        beta: this.initialBeta,
+        gamma: this.initialGamma,
+      }
+    };
+
+    // reset the values to the last recorded position
+    this.initialAlpha = this.lastAlpha;
+    this.initialBeta = this.lastBeta;
+    this.initialGamma = this.lastGamma;
+    
+    // add the new values to the cached calibration data
+    calibration.current = {
+      alpha: this.initialAlpha,
+      beta: this.initialBeta,
+      gamma: this.initialGamma,
+    };
+
+    return calibration;
   }
 
   /**
@@ -158,6 +213,13 @@ class Tornis {
           x: Math.floor(this.lastWindowXVelocity) || 0,
           y: Math.floor(this.lastWindowYVelocity) || 0
         }
+      },
+      orientation: {
+        changed: this.orientationChange,
+        // These values are relative to the first calibrated value
+        alpha: Math.floor(this.lastAlpha - this.initialAlpha) || 0,
+        beta: Math.floor(this.lastBeta - this.initialBeta) || 0,
+        gamma: Math.floor(this.lastGamma - this.initialGamma) || 0
       }
     };
   }
@@ -170,12 +232,15 @@ class Tornis {
       currWidth,
       currHeight,
       currMouseX,
-      currMouseY
+      currMouseY,
+      currAlpha,
+      currBeta,
+      currGamma
     } = this;
     if (this.updating) return false;
 
     // reset the flags
-    this.scrollChange = this.sizeChange = this.mouseChange = this.positionChange = false;
+    this.scrollChange = this.sizeChange = this.mouseChange = this.positionChange = this.orientationChange = false;
 
     // we need to grab a buffer of the last five values and average them
     if (this.windowXVelocity.length > 5) { this.windowXVelocity.shift(); }
@@ -282,12 +347,29 @@ class Tornis {
       this.mouseChange = true;
     }
 
+    // orientation
+    if (currAlpha != this.lastAlpha) {
+      this.lastAlpha = currAlpha;
+      this.orientationChange = true;
+    }
+
+    if (currBeta != this.lastBeta) {
+      this.lastBeta = currBeta;
+      this.orientationChange = true;
+    }
+
+    if (currGamma != this.lastGamma) {
+      this.lastGamma = currGamma;
+      this.orientationChange = true;
+    }
+
     // Finally, we can invoke the callbacks, but if something has changed
     if (
       this.scrollChange ||
       this.sizeChange ||
       this.mouseChange ||
-      this.positionChange
+      this.positionChange ||
+      this.orientationChange
     ) {
       // pass the formatted data into each watched function
       this.callbacks.forEach(cb => cb(this.formatData()));
@@ -322,6 +404,7 @@ class Tornis {
       firstRunData.mouse.changed = true;
       firstRunData.size.changed = true;
       firstRunData.position.changed = true;
+      firstRunData.orientation.changed = true;
   
       // run the callback using the simulated data
       callback(firstRunData);
@@ -358,7 +441,8 @@ if (!isSSR) {
   window.__TORNIS = {
     watchViewport: TORNIS.watch,
     unwatchViewport: TORNIS.unwatch,
-    getViewportState: TORNIS.formatData
+    getViewportState: TORNIS.formatData,
+    recalibrateOrientation: TORNIS.recalibrateOrientation
   };
 }
 
@@ -366,3 +450,4 @@ if (!isSSR) {
 export const watchViewport = TORNIS.watch;
 export const unwatchViewport = TORNIS.unwatch;
 export const getViewportState = TORNIS.formatData;
+export const recalibrateOrientation = TORNIS.recalibrateOrientation;

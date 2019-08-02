@@ -19,8 +19,6 @@ Tornis currently tracks state for:
 * Scroll velocity
 * Browser position relative to the screen
 * Browser velocity relative to the screen
-
-Coming soon:
 * Device orientation
 
 You can subscribe to store updates and combine these values to create all sorts of effects.
@@ -84,12 +82,23 @@ You can subscribe a function to the Tornis store by passing it to the `watchView
       y: Integer
     }
   },
+  orientation: {
+    changed: Boolean,
+    alpha: Integer,
+    beta: Integer,
+    gamma: Integer
+  }
 }
 ```
 
 If its related properties have changed since the last state update, the nested changed properties will be individually set to true. This means that at any given update, you can test for what has and hasn't changed. You should use this to guard your code and ensure that updates only run when they're needed.
 
-You can see an example of this in the next section.
+You can see an example of this in the standard usage section.
+
+## A note on device orientation
+The `deviceorientation` API is currently in a state of flux, with the intention of full deprecation at some point in the future. However, as of publishing, it is still available. On Chrome, `deviceorientation` is deprecated over http, and you will require https for the events to fire. Similarly, on iOS, the API is now blocked behind a flag in the user's Safari settings. The user must enable 'motion and orientation access' for the events to fire.
+
+Once the API is enabled, Tornis doesn't calculate device orientation values exactly as the device does. Instead it resolves for the user's natural resting position by storing the initial device position on page load. All subsequent values reported for alpha, beta and gamma are relative to this initially calibrated position. The function `recalibrateOrientation()` can be used to reset the default position. This function returns an object containing the previous, and incoming calibrated positions.
 
 ## Standard usage
 ``` javascript
@@ -97,7 +106,8 @@ You can see an example of this in the next section.
 import { 
   watchViewport, 
   unwatchViewport, 
-  getViewportState
+  getViewportState,
+  recalibrateOrientation
 } from 'tornis';
 
 // define a watched function, to be run on each update
@@ -117,6 +127,14 @@ const updateValues = ({ size, scroll, mouse, orientation }) => {
   if (position.changed) {
     // do something related to browser window position or velocity
   }
+
+  if (position.changed) {
+    // do something related to browser window position or velocity
+  }
+
+  if (orientation.changed) {
+    // do something related to device orientation
+  }
 };
 
 // bind the watch function
@@ -131,6 +149,9 @@ unwatchViewport(updateValues);
 
 // to get a snapshot of the current viewport state
 const state = getViewportState();
+
+// to reset the default device orientation.
+const calibrationData = recalibrateOrientation();
 ```
 
 Any watched function will be automatically run whenever any of the associated properties change.
