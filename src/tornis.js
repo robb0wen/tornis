@@ -45,12 +45,15 @@ class Tornis {
     this.lastHeight = window.innerHeight;
     this.lastMouseX = 0;
     this.lastMouseY = 0;
+    this.lastWindowX = window.screenX;
+    this.lastWindowY = window.screenY;
 
     this.scrollHeight = document.body.scrollHeight;
 
     this.scrollChange = false;
     this.sizeChange = false;
     this.mouseChange = false;
+    this.positionChange = false;
 
     this.currX = 0;
     this.currY = 0;
@@ -58,12 +61,19 @@ class Tornis {
     this.currHeight = window.innerHeight;
     this.currMouseX = 0;
     this.currMouseY = 0;
+    this.currWindowX = 0;
     
     // initialise array buffers for mouse velocity
     this.mouseXVelocity = [];
     this.mouseYVelocity = [];
     this.lastMouseXVelocity = 0;
     this.lastMouseYVelocity = 0;
+
+    // initialise array buffers for window velocity
+    this.windowXVelocity = [];
+    this.windowYVelocity = [];
+    this.lastWindowXVelocity = 0;
+    this.lastWindowYVelocity = 0;
 
     // flag to limit rAF renders
     this.updating = false;
@@ -137,6 +147,17 @@ class Tornis {
           x: Math.floor(this.lastMouseXVelocity) || 0,
           y: Math.floor(this.lastMouseYVelocity) || 0
         }
+      },
+      position: {
+        changed: this.positionChange,
+        left: Math.floor(this.lastWindowX),
+        right: Math.floor(this.lastWindowX + this.lastWidth),
+        top: Math.floor(this.lastWindowY),
+        bottom: Math.floor(this.lastWindowY + this.lastHeight),
+        velocity: {
+          x: Math.floor(this.lastWindowXVelocity) || 0,
+          y: Math.floor(this.lastWindowYVelocity) || 0
+        }
       }
     };
   }
@@ -154,8 +175,41 @@ class Tornis {
     if (this.updating) return false;
 
     // reset the flags
-    this.scrollChange = this.sizeChange = this.mouseChange = false;
+    this.scrollChange = this.sizeChange = this.mouseChange = this.positionChange = false;
+
+    // we need to grab a buffer of the last five values and average them
+    if (this.windowXVelocity.length > 5) { this.windowXVelocity.shift(); }
+    this.windowXVelocity.push(window.screenX - this.lastWindowX);
+
+    // see if the average velocity changed
+    if (getMean(this.windowXVelocity) != this.lastWindowXVelocity) {
+      this.lastWindowXVelocity = getMean(this.windowXVelocity);
+      this.positionChange = true;
+    }
+
+    // check window X position
+    if (window.screenX != this.lastWindowX) {
+      this.positionChange = true;
+      this.lastWindowX = window.screenX;
+    }
+
+    // we need to grab a buffer of the last five values and average them
+    if (this.windowYVelocity.length > 5) { this.windowYVelocity.shift(); }
+    this.windowYVelocity.push(window.screenY - this.lastWindowY);
+
+    // see if the average velocity changed
+    if (getMean(this.windowYVelocity) != this.lastWindowYVelocity) {
+      this.lastWindowYVelocity = getMean(this.windowYVelocity);
+      this.positionChange = true;
+    }
+
+    // check window Y position
+    if (window.screenY != this.lastWindowY) {
+      this.positionChange = true;
+      this.lastWindowY = window.screenY;
+    }
     
+
     // reset scroll X velocity
     if (window.pageXOffset == this.lastX && this.scrollXVelocity != 0) {
       this.scrollXVelocity = 0;
@@ -232,7 +286,8 @@ class Tornis {
     if (
       this.scrollChange ||
       this.sizeChange ||
-      this.mouseChange 
+      this.mouseChange ||
+      this.positionChange
     ) {
       // pass the formatted data into each watched function
       this.callbacks.forEach(cb => cb(this.formatData()));

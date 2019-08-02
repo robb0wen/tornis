@@ -48,4 +48,15 @@ export interface TornisUpdateValues {
       y: number
     }
   }
+  position: {
+    changed: Boolean
+    left: number
+    right: number
+    top: number
+    bottom: number
+    velocity: {
+      x: number
+      y: number
+    }
+  }
 }

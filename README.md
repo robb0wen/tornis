@@ -17,6 +17,8 @@ Tornis currently tracks state for:
 * Viewport size
 * Scroll position
 * Scroll velocity
+* Browser position relative to the screen
+* Browser velocity relative to the screen
 
 Coming soon:
 * Device orientation
@@ -70,7 +72,18 @@ You can subscribe a function to the Tornis store by passing it to the `watchView
       x: Integer
       y: Integer
     }
-  }
+  },
+  position: {
+    changed: Boolean,
+    left: Integer,
+    right: Integer,
+    top: Integer,
+    bottom: Integer,
+    velocity: {
+      x: Integer,
+      y: Integer
+    }
+  },
 }
 ```
 
@@ -99,6 +112,10 @@ const updateValues = ({ size, scroll, mouse, orientation }) => {
 
   if (mouse.changed) {
     // do something related to mouse position or velocity
+  }
+
+  if (position.changed) {
+    // do something related to browser window position or velocity
   }
 };
 
