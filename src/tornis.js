@@ -321,6 +321,7 @@ class Tornis {
       firstRunData.scroll.changed = true;
       firstRunData.mouse.changed = true;
       firstRunData.size.changed = true;
+      firstRunData.position.changed = true;
   
       // run the callback using the simulated data
       callback(firstRunData);
