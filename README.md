@@ -111,7 +111,7 @@ import {
 } from 'tornis';
 
 // define a watched function, to be run on each update
-const updateValues = ({ size, scroll, mouse, orientation }) => {
+const updateValues = ({ size, scroll, mouse, position, orientation }) => {
   if (size.changed) {
     // do something related to size
   }
@@ -122,10 +122,6 @@ const updateValues = ({ size, scroll, mouse, orientation }) => {
 
   if (mouse.changed) {
     // do something related to mouse position or velocity
-  }
-
-  if (position.changed) {
-    // do something related to browser window position or velocity
   }
 
   if (position.changed) {
