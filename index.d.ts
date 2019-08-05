@@ -59,4 +59,10 @@ export interface TornisUpdateValues {
       y: number
     }
   }
+  orientation: {
+    changed: Boolean,
+    alpha: number,
+    beta: number,
+    gamma: number
+  }
 }

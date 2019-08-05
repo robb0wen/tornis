@@ -1,6 +1,6 @@
 {
   "name": "tornis",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Tornis helps you watch and respond to changes in your browser's viewport",
   "main": "dist/tornis.js",
   "typings": "index.d.ts",
@@ -14,6 +14,7 @@
     "mouse",
     "scrolling",
     "state",
+    "orientation",
     "management"
   ],
   "author": {
