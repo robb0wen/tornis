@@ -20,6 +20,7 @@ Tornis currently tracks state for:
 * Browser position relative to the screen
 * Browser velocity relative to the screen
 * Device orientation
+* Device pixel ratio
 
 You can subscribe to store updates and combine these values to create all sorts of effects.
 
@@ -87,6 +88,10 @@ You can subscribe a function to the Tornis store by passing it to the `watchView
     alpha: Integer,
     beta: Integer,
     gamma: Integer
+  },
+  devicePixelRatio: {
+    changed: Boolean,
+    ratio: Number
   }
 }
 ```
@@ -111,7 +116,7 @@ import {
 } from 'tornis';
 
 // define a watched function, to be run on each update
-const updateValues = ({ size, scroll, mouse, position, orientation }) => {
+const updateValues = ({ size, scroll, mouse, position, orientation, devicePixelRatio }) => {
   if (size.changed) {
     // do something related to size
   }
@@ -130,6 +135,10 @@ const updateValues = ({ size, scroll, mouse, position, orientation }) => {
 
   if (orientation.changed) {
     // do something related to device orientation
+  }
+  
+  if (devicePixelRatio.changed) {
+    // do something related to pixel ratio
   }
 };
 

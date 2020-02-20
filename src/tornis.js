@@ -63,6 +63,7 @@ class Tornis {
     this.mouseChange = false;
     this.positionChange = false;
     this.orientationChange = false;
+    this.devicePixelRatioChange = false;
 
     this.currX = 0;
     this.currY = 0;
@@ -71,6 +72,9 @@ class Tornis {
     this.currMouseX = 0;
     this.currMouseY = 0;
     this.currWindowX = 0;
+    
+    // device pixel ratio (where able)
+    this.currDevicePixelRatio = this.lastDevicePixelRatio = Math.max( window.devicePixelRatio || 1.0, 1.0 );
     
     // initialise array buffers for mouse velocity
     this.mouseXVelocity = [];
@@ -220,6 +224,10 @@ class Tornis {
         alpha: Math.floor(this.lastAlpha - this.initialAlpha) || 0,
         beta: Math.floor(this.lastBeta - this.initialBeta) || 0,
         gamma: Math.floor(this.lastGamma - this.initialGamma) || 0
+      },
+      devicePixelRatio: {
+        changed: this.devicePixelRatioChange,
+        ratio: this.currDevicePixelRatio
       }
     };
   }
@@ -235,12 +243,13 @@ class Tornis {
       currMouseY,
       currAlpha,
       currBeta,
-      currGamma
+      currGamma,
+      currDevicePixelRatio
     } = this;
     if (this.updating) return false;
 
     // reset the flags
-    this.scrollChange = this.sizeChange = this.mouseChange = this.positionChange = this.orientationChange = false;
+    this.scrollChange = this.sizeChange = this.mouseChange = this.positionChange = this.orientationChange = this.devicePixelRatioChange = false;
 
     // we need to grab a buffer of the last five values and average them
     if (this.windowXVelocity.length > 5) { this.windowXVelocity.shift(); }
@@ -362,6 +371,18 @@ class Tornis {
       this.lastGamma = currGamma;
       this.orientationChange = true;
     }
+    
+    // device pixel ratio, but only if the window has moved
+    if ( this.positionChange || this.sizeChange )
+    {
+      this.currDevicePixelRatio = Math.max( window.devicePixelRatio || 1, 1 );
+      
+      if ( this.currDevicePixelRatio !== this.lastDevicePixelRatio )
+      {
+        this.devicePixelRatioChange = true;
+        this.lastDevicePixelRatio = this.currDevicePixelRatio;
+      }
+    }
 
     // Finally, we can invoke the callbacks, but if something has changed
     if (
@@ -369,7 +390,8 @@ class Tornis {
       this.sizeChange ||
       this.mouseChange ||
       this.positionChange ||
-      this.orientationChange
+      this.orientationChange ||
+      this.devicePixelRatioChange
     ) {
       // pass the formatted data into each watched function
       this.callbacks.forEach(cb => cb(this.formatData()));
@@ -405,6 +427,7 @@ class Tornis {
       firstRunData.size.changed = true;
       firstRunData.position.changed = true;
       firstRunData.orientation.changed = true;
+      firstRunData.devicePixelRatio.changed = true;
   
       // run the callback using the simulated data
       callback(firstRunData);
