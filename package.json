@@ -25,10 +25,10 @@
   "homepage": "https://github.com/robb0wen/tornis#readme",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "rollup": "^1.12.1",
-    "rollup-plugin-babel": "^4.3.2",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "rollup": "^1.32.1",
+    "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-uglify-es": "0.0.1"
   }
 }
