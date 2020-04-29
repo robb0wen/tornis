@@ -1,6 +1,6 @@
 {
   "name": "tornis",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Tornis helps you watch and respond to changes in your browser's viewport",
   "main": "dist/tornis.js",
   "module": "src/tornis.js",
